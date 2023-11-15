@@ -8,10 +8,13 @@ To write a program to implement the Decision Tree Regressor Model for Predicting
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1. Import pandas and matplot libraries,numpy.
-2. import Kmeans algorithm to solve customer segmentation.
-3. Using the for loop cluster the given data
-4. Predict the output and plot data graphs. 5.Display the outputs
+1.Import the libraries and read the data frame using pandas.
+
+2.Calculate the null values present in the dataset and apply label encoder.
+
+3.Determine test and training data set and apply decison tree regression in dataset.
+
+4.calculate Mean square error,data prediction and r2.
 
 ## Program:
 ```
@@ -25,7 +28,10 @@ RegisterNumber:  212222230020
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-data=pd.read_csv("/content/Mall_Customers.csv")
+
+
+import pandas as pd
+data=pd.read_csv("Salary.csv")
 
 data.head()
 
@@ -33,56 +39,48 @@ data.info()
 
 data.isnull().sum()
 
-from sklearn.cluster import KMeans
-wcss = []
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
 
-for i in range(1,11):
-  kmeans=KMeans(n_clusters=i,init="k-means++")
-  kmeans.fit(data.iloc[:,3:])
-  wcss.append(kmeans.inertia_)
-print('Elbow method diagram:')
-plt.plot(range(1,11),wcss)
-plt.xlabel("No. of Clusters")
-plt.ylabel("wcss")
-plt.title("Elbow Method")
+data["Position"]=le.fit_transform(data["Position"])
+data.head()
 
-print('KMeans():')
-km=KMeans(n_clusters=5)
-km.fit(data.iloc[:,3:])
-print('array():')
-y_pred=km.predict(data.iloc[:,3:])
-y_pred
+x=data[["Position","Level"]]
+x.head()
 
-print('Customer segments diagram:')
-data["cluster"] = y_pred
-df0 = data[data["cluster"]==0]
-df1 = data[data["cluster"]==1]
-df2 = data[data["cluster"]==2]
-df3 = data[data["cluster"]==3]
-df4 = data[data["cluster"]==4]
-plt.scatter(df0["Annual Income (k$)"],df0["Spending Score (1-100)"],c="red",label="cluster0")
-plt.scatter(df1["Annual Income (k$)"],df1["Spending Score (1-100)"],c="black",label="cluster1")
-plt.scatter(df2["Annual Income (k$)"],df2["Spending Score (1-100)"],c="blue",label="cluster2")
-plt.scatter(df3["Annual Income (k$)"],df3["Spending Score (1-100)"],c="green",label="cluster3")
-plt.scatter(df4["Annual Income (k$)"],df4["Spending Score (1-100)"],c="magenta",label="cluster4")
-plt.legend()
-plt.title("Customer segments")
+y=data[["Salary"]]
 
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test=train_test_split(x,y,test_size=0.2,random_state=2)
+
+from sklearn.tree import DecisionTreeRegressor
+dt=DecisionTreeRegressor()
+dt.fit(x_train,y_train)
+y_pred=dt.predict(x_test)
+
+from sklearn import metrics
+mse=metrics.mean_squared_error(y_test, y_pred)
+mse
+
+r2=metrics.r2_score(y_test,y_pred)
+r2
+
+dt.predict([[5,6]])
 ```
 ## Output:
-![image](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/a9790e54-b6cf-4675-80f1-a4708bd81ee5)
+![239682377-b82352d4-d32b-417f-b084-9bcc6679d6d4](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/4a396f1c-b195-46aa-8564-e4c9aa9e089c)
 
-![282239446-03863b5b-5592-411f-a91f-0c4a589b8a08](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/55b24195-c801-489d-99bb-f92b9567283b)
+![239682386-f86626d8-e411-4d23-b827-c9be33f3f986](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/73cde66c-51e8-40bf-9921-1a545645d798)
 
-![282239447-15e1ecfb-7633-495a-b4e1-66898dbd4dcb](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/1bfc3b22-64af-47b3-b5a8-558e8c327234)
+![239682392-9f764145-534a-4aaa-8573-d9a98b255e71](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/7e97df3f-545e-4477-8757-d8c128f54d6f)
+### MSE value
+![239682475-ce29115f-52b7-417d-857e-1309409ddd1f](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/31118c43-229f-4644-8578-ba3c155ef315)
 
-![282239449-8820f2cf-e24f-442d-bc91-489f12f55fce](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/c0d1ff34-d53d-4df5-a5fc-1b5f48a8e4be)
+### r2 value
+![239682499-7cf9ec95-7b09-4250-9a50-09b12bd94308](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/8322f1df-8954-4afe-82ab-a078e15eb24a)
 
-![282239450-5c5ed508-7c6b-428d-a956-5093ef6c4f45](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/24b46a64-efb5-44b4-afd9-f7afca0fbe6b)
-
-![282239450-5c5ed508-7c6b-428d-a956-5093ef6c4f45](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/9cb350cb-d865-4263-94df-0bd00790e200)
-
-![282239451-387d538f-12d3-47da-8b52-2aa0961fef3c](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/1a21289f-f8f6-4aa8-b5c6-891dfe8debc3)
+### data prediction
+![239682529-cdd07dd7-6bfb-494f-9fe3-378d69126a31](https://github.com/BaskaranV15/Implementation-of-Decision-Tree-Regressor-Model-for-Predicting-the-Salary-of-the-Employee/assets/118703522/a5d4554c-5c12-4868-a0d7-22ecd314f8de)
 
 
 ## Result:
